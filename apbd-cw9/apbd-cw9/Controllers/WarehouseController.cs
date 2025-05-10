@@ -1,3 +1,4 @@
+using apbd_cw9.Exceptions;
 using apbd_cw9.Models.DTOs;
 using apbd_cw9.Services;
 using Microsoft.AspNetCore.Http;
@@ -19,16 +20,20 @@ namespace apbd_cw9.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct(WarehouseDTO dto)
         {
-            var result = await _warehouseService.AddProduct(dto);
-            switch (result)
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
             {
-                case -1: return NotFound("Product not found");
-                case -2: return NotFound("Warehouse not found");
-                case -3: return BadRequest("Incorrect request");
-                case -4: return NotFound("Order not found");
+                var result = await _warehouseService.AddProduct(dto);
+                return Created(result.ToString(), result);
             }
-
-            return Ok(result);
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ConflictException e)
+            {
+                return Conflict(e.Message);
+            }
         }
     }
 }
