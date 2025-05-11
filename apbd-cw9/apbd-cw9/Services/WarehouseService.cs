@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using apbd_cw9.Exceptions;
 using apbd_cw9.Models.DTOs;
 using Microsoft.Data.SqlClient;
@@ -116,5 +117,23 @@ public class WarehouseService : IWarehouseService
             await transaction.RollbackAsync();
             throw;
         }
+    }
+
+    public async Task AddProductProcedure(WarehouseDTO dto)
+    {
+        await using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
+        await using SqlCommand command = new SqlCommand();
+        
+        command.Connection = connection;
+        await connection.OpenAsync();
+
+        command.CommandText = "AddProductToWarehouse";
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@IdProduct", dto.IdProduct);
+        command.Parameters.AddWithValue("@IdWarehouse", dto.IdWarehouse);
+        command.Parameters.AddWithValue("@Amount", dto.Amount);
+        command.Parameters.AddWithValue("@CreatedAt", dto.CreatedAt);
+        
+        await command.ExecuteNonQueryAsync();
     }
 }

@@ -35,5 +35,21 @@ namespace apbd_cw9.Controllers
                 return Conflict(e.Message);
             }
         }
+        
+        [HttpPost("proc")]
+        public async Task<IActionResult> AddProductProcedure(WarehouseDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                await _warehouseService.AddProductProcedure(dto);
+                return Created();
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }
