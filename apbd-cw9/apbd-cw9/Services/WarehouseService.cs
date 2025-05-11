@@ -56,20 +56,7 @@ public class WarehouseService : IWarehouseService
             }
             reader.Close();
             if (res == 0) throw new NotFoundException("Order not found");
-
-            // command.Parameters.Clear();
-            // command.CommandText = @"SELECT IdOrder FROM [Order] WHERE IdProduct = @IdProduct AND Amount = @Amount AND CreatedAt < @CreatedAt";
-            // command.Parameters.AddWithValue("@IdProduct", dto.IdProduct);
-            // command.Parameters.AddWithValue("@Amount", dto.Amount);
-            // command.Parameters.AddWithValue("@CreatedAt", dto.CreatedAt);
-            //
-            // var idOrder = 0;
-            // await using var reader = await command.ExecuteReaderAsync();
-            // while (await reader.ReadAsync())
-            // {
-            //     idOrder = Convert.ToInt32(reader.GetOrdinal("IdOrder"));
-            // }
-            // reader.Close();
+            
             command.Parameters.Clear();
             command.CommandText = "SELECT COUNT(*) FROM Product_Warehouse WHERE IdOrder = @IdOrder";
             command.Parameters.AddWithValue("@IdOrder", res);
